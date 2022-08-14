@@ -67,8 +67,4 @@ export default {
 
 }
 }
-let cuenta = '0'
-if (decodedString) {
-  cuenta++
-}
 </script>
