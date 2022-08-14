@@ -7,66 +7,87 @@
 </route>
 
 
-
 <template>
-    <div class="text-xl">{{ error }}</div>
-  <div class="md:container md:mx-auto px-8">
-    <p>{{ decodedString }}</p>
-    <p>Llevas escaneados<div v-if="decodedString">Llevas escaneados {{ cuenta }}</div></p>
-    <div class="">
-    <qrcode-stream @init="onInit" @decode="onDecode"></qrcode-stream>
-    </div>
+  <div>
+    <p class="decode-result">Last result: <b>{{ result }}</b></p>
+    <p> Total: <b> {{ total }}</b></p>
 
+    <qrcode-stream :camera="camera" @decode="onDecode" @init="onInit">
+      <div v-show="showScanConfirmation" class="scan-confirmation">
+        <img :src="$withBase('/checkmark.svg')" alt="Checkmark" width="128px" />
+      </div>
+    </qrcode-stream>
   </div>
 </template>
 
-
-
-
 <script>
-import {QrcodeStream} from 'vue3-qrcode-reader'
+import { QrcodeStream } from 'vue3-qrcode-reader'
+
 export default {
-  data() {
+
+  components: { QrcodeStream },
+
+  data () {
     return {
-      error: '',
-      decodedString: '',
-      cuenta: 0,
+      camera: 'auto',
+      result: null,
+      showScanConfirmation: false,
+      total: 0,
     }
   },
-    components: {
-      QrcodeStream
-    },
-    methods: {
-  async onInit (promise) {
-    // show loading indicator
 
-    try {
-      const { capabilities } = await promise
+  methods: {
 
-      // successfully initialized
-    } catch (error) {
-      if (error.name === 'NotAllowedError') {
-        this.error = ("Denegaste el uso de la camara. Para poder usar la aplicacion actualiza y presiona PERMITIR")
-      } else if (error.name === 'NotFoundError') {
-        this.error = ("No se encontró ninguna cámara instalada.")
-      } else if (error.name === 'NotSupportedError') {
-        this.error = ("Esta pagina no cuenta con protocolo de seguridad SSL (ni es localhost)")
-      } else if (error.name === 'NotReadableError') {
-        this.error = ("La camara se encuentra en uso." )
-      } else if (error.name === 'OverconstrainedError') {
-        this.error = ("did you requested the front camera although there is none?")
-      } else if (error.name === 'StreamApiNotSupportedError') {
-        this.error = ("browser seems to be lacking features")
-      }
+    async onInit (promise) {
+      try {
+        await promise
+      } catch (e) {
+        console.error(e)
       } finally {
-      // hide loading indicator
+        this.showScanConfirmation = this.camera === "off"
       }
     },
-    onDecode(decodedString) {
-      this.decodedString = decodedString;
-      cuenta++;
+
+    async onDecode (content) {
+      this.result = content
+
+      this.pause()
+      await this.timeout(500)
+      this.unpause()
+      this.sumador()
+
+    },
+
+    unpause () {
+      this.camera = 'auto'
+    },
+
+    pause () {
+      this.camera = 'off'
+    },
+    contador () {
+      return this.total++
+    },
+
+    timeout (ms) {
+      return new Promise(resolve => {
+        window.setTimeout(resolve, ms)
+      })
     }
   }
 }
-
 </script>
+
+<style scoped>
+.scan-confirmation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(255, 255, 255, .8);
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+</style>
