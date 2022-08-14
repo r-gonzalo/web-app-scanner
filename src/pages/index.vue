@@ -10,9 +10,9 @@
 
 <template>
     <div class="text-xl">{{ error }}</div>
-    <div> {{ cuenta }}</div>
   <div class="md:container md:mx-auto px-8">
     <p>{{ decodedString }}</p>
+    <p>Llevas escaneados<div v-if="decodedString">Llevas escaneados {{ cuenta }}</div></p>
     <div class="">
     <qrcode-stream @init="onInit" @decode="onDecode"></qrcode-stream>
     </div>
@@ -30,6 +30,7 @@ export default {
     return {
       error: '',
       decodedString: '',
+      cuenta: 0,
     }
   },
     components: {
@@ -57,14 +58,15 @@ export default {
       } else if (error.name === 'StreamApiNotSupportedError') {
         this.error = ("browser seems to be lacking features")
       }
-    } finally {
+      } finally {
       // hide loading indicator
+      }
+    },
+    onDecode(decodedString) {
+      this.decodedString = decodedString;
+      cuenta++;
     }
-  },
-  onDecode(decodedString) {
-    this.decodedString = decodedString;
   }
+}
 
-}
-}
 </script>
