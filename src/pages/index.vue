@@ -10,7 +10,7 @@
 
 <template>
     <div class="text-xl">{{ error }}</div>
-
+    <div> {{ cuenta }}</div>
   <div class="md:container md:mx-auto px-8">
     <p>{{ decodedString }}</p>
     <div class="">
@@ -66,5 +66,9 @@ export default {
   }
 
 }
+}
+let cuenta = '0'
+if (decodedString) {
+  cuenta++
 }
 </script>
