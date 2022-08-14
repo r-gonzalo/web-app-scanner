@@ -1,7 +1,7 @@
 <route lang="json">
 {
   "meta": {
-    "title": "Home"
+    "title": "Web-App-Scanner"
   }
 }
 </route>
@@ -9,12 +9,12 @@
 
 
 <template>
-  <div class="bg-gray-50 px-8">
-    <p>{{ error }}</p>
+  <div class="md:container md:mx-auto px-8">
+    <div class="text-xl">{{ error }}</div>
     <p>{{ decodedString }}</p>
-    <div class="md: container md:mx-auto">
+    <div class="">
     <qrcode-stream @init="onInit" @decode="onDecode"></qrcode-stream>
-</div>
+    </div>
 
   </div>
 </template>
@@ -44,13 +44,13 @@ export default {
       // successfully initialized
     } catch (error) {
       if (error.name === 'NotAllowedError') {
-        this.error = ("user denied camera access permisson")
+        this.error = ("Denegaste el uso de la camara. Para poder usar la aplicacion actualiza y presiona PERMITIR")
       } else if (error.name === 'NotFoundError') {
-        this.error = ("no suitable camera device installed")
+        this.error = ("No se encontró ninguna cámara instalada.")
       } else if (error.name === 'NotSupportedError') {
-        this.error = ("page is not served over HTTPS (or localhost)")
+        this.error = ("Esta pagina no cuenta con protocolo de seguridad SSL (ni es localhost)")
       } else if (error.name === 'NotReadableError') {
-        this.error = ("maybe camera is already in use" )
+        this.error = ("La camara se encuentra en uso." )
       } else if (error.name === 'OverconstrainedError') {
         this.error = ("did you requested the front camera although there is none?")
       } else if (error.name === 'StreamApiNotSupportedError') {
