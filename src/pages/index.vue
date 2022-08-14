@@ -9,8 +9,9 @@
 
 
 <template>
-  <div class="md:container md:mx-auto px-8">
     <div class="text-xl">{{ error }}</div>
+
+  <div class="md:container md:mx-auto px-8">
     <p>{{ decodedString }}</p>
     <div class="">
     <qrcode-stream @init="onInit" @decode="onDecode"></qrcode-stream>
